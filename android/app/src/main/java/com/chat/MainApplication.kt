@@ -1,4 +1,4 @@
-package com.chat
+package com.roqay.chat
 
 import android.app.Application
 import com.facebook.react.PackageList

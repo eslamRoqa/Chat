@@ -5,7 +5,18 @@
  * @format
  */
 
-import React from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import RegisterScreen from './src/screens/RegisterScreen';
+import LoginScreen from './src/screens/LoginScreen';
+import * as React from 'react';
+import initializeApp from '@react-native-firebase/app';
+import HomeScreen from './src/screens/HomeScreen';
+import {useEffect, useState} from 'react';
+import auth from '@react-native-firebase/auth';
+
+/* import React from 'react';
+
 import type {PropsWithChildren} from 'react';
 import {
   SafeAreaView,
@@ -113,6 +124,51 @@ const styles = StyleSheet.create({
   highlight: {
     fontWeight: '700',
   },
-});
+}); */
+const Stack = createNativeStackNavigator();
+const App = () => {
+  const [user, setUser] = useState('');
+  const [initializing, setInitializing] = useState(true);
 
+  const onAuthStateChanged = user => {
+    setUser(user);
+    if (initializing) setInitializing(true);
+  };
+
+  useEffect(() => {
+    return auth().onAuthStateChanged(onAuthStateChanged);
+  }, []);
+
+  const initialScreen = () => {
+    if (!user) {
+      return 'Login';
+    } else {
+      return 'Home';
+    }
+  };
+
+  console.log(user);
+  console.log(initialScreen());
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName={initialScreen()}>
+        <Stack.Screen
+          component={RegisterScreen}
+          name="Register"
+          options={{title: 'Registration'}}
+        />
+        <Stack.Screen
+          name="Login"
+          component={LoginScreen}
+          options={{title: 'Login'}}
+        />
+        <Stack.Screen
+          component={HomeScreen}
+          name="Home"
+          options={{title: 'Home'}}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+};
 export default App;

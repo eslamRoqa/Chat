@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "142830016041",
+    "project_id": "chat-99a9d",
+    "storage_bucket": "chat-99a9d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:142830016041:android:94e8f3cb31ea4a01cd6e38",
+        "android_client_info": {
+          "package_name": "com.roqay.chat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2-1LjM48cwcfjrUWqAbvJjD-0bd6IfxI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
