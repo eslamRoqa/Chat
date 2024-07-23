@@ -15,6 +15,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useEffect, useState} from 'react';
 import styles from '../values/styles';
 import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
 const RegistrationScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
@@ -23,28 +24,9 @@ const RegistrationScreen = ({navigation}) => {
   const onChangeTextEmail = value => {
     setEmail(value);
   };
-  /*   const register = () => {
-    createUserWithEmailAndPassword(auth, email, password).then(
-      userCredential => {
-        const user = userCredential.user;
-        setDoc(doc(db, 'users', user.uid), {
-          uid: user.uid,
-          email: email,
-          name: name,
-          req: [],
-          realFriend: [],
-          avatar: avatar,
-        });
-        updateProfile(user, {
-          displayName: name,
-          // photoURL: avatar ? avatar : 'https://robohash.org/default',
-        });
-      },
-    );
-  }; */
 
-  const register = () => {
-    auth()
+  const register = async () => {
+    await auth()
       .createUserWithEmailAndPassword(email, password)
       .then(userCredential => {
         const user = userCredential.user;
@@ -54,10 +36,28 @@ const RegistrationScreen = ({navigation}) => {
           // photoURL: avatar ? avatar : 'https://robohash.org/default',
         });
         console.log('User account created & signed in!');
+        try {
+          firestore()
+            .collection('Users')
+            .doc(user.uid)
+            .set({
+              userId: user.uid,
+              name: name,
+              email: email,
+              req: [],
+              realFriend: [],
+              avatar: null,
+            })
+            .then(() => {
+              console.log('User added in firestore!');
+            });
+        } catch (e) {
+          console.error(e);
+        }
         navigation.navigate('Login');
         ToastAndroid.show('Congratulations! Login please', ToastAndroid.LONG);
-        // doc(db, 'users', user.uid);
       })
+
       .catch(error => {
         if (error.code === 'auth/email-already-in-use') {
           console.log('That email address is already in use!');
@@ -84,7 +84,7 @@ const RegistrationScreen = ({navigation}) => {
           value={name}
           // onChangeText={value => onChangeTextEmail(value)}
           onChangeText={onChangeTextName}
-          placeholder="Enter your name"
+          placeholder="Enter your full name"
         />
         <Text style={styles.editTextStyle}>Email</Text>
         <TextInput
@@ -118,5 +118,4 @@ const RegistrationScreen = ({navigation}) => {
     </View>
   );
 };
-// useEffect(() => console.log(email));
 export default RegistrationScreen;

@@ -52,6 +52,15 @@ const styles = StyleSheet.create({
     marginStart: 8,
     marginEnd: 8,
   },
+  floatingActionButtonStyle: {
+    bottom: 45,
+    end: 30,
+    position: 'absolute',
+    width: 40,
+    height: 40,
+    borderRadius: 45,
+    backgroundColor: 'white',
+  },
 });
 
 export default styles;

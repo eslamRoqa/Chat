@@ -10,10 +10,17 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import RegisterScreen from './src/screens/RegisterScreen';
 import LoginScreen from './src/screens/LoginScreen';
 import * as React from 'react';
-import initializeApp from '@react-native-firebase/app';
 import HomeScreen from './src/screens/HomeScreen';
 import {useEffect, useState} from 'react';
 import auth from '@react-native-firebase/auth';
+import IsLogged from './src/components/IsLogged';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import isLogged from './src/components/IsLogged';
+import ExplorationScreen from './src/screens/ExplorationScreen';
+import {UserIdProvider} from './src/context/userIdContext';
+import ChatScreen from './src/screens/ChatScreen';
+import {Screen} from 'react-native-screens';
+import RoomCreationScreen from './src/screens/RoomCreationScreen';
 
 /* import React from 'react';
 
@@ -126,32 +133,11 @@ const styles = StyleSheet.create({
   },
 }); */
 const Stack = createNativeStackNavigator();
+
 const App = () => {
-  const [user, setUser] = useState('');
-  const [initializing, setInitializing] = useState(true);
-
-  const onAuthStateChanged = user => {
-    setUser(user);
-    if (initializing) setInitializing(true);
-  };
-
-  useEffect(() => {
-    return auth().onAuthStateChanged(onAuthStateChanged);
-  }, []);
-
-  const initialScreen = () => {
-    if (!user) {
-      return 'Login';
-    } else {
-      return 'Home';
-    }
-  };
-
-  console.log(user);
-  console.log(initialScreen());
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName={initialScreen()}>
+      <Stack.Navigator initialRouteName="Login">
         <Stack.Screen
           component={RegisterScreen}
           name="Register"
@@ -160,15 +146,36 @@ const App = () => {
         <Stack.Screen
           name="Login"
           component={LoginScreen}
-          options={{title: 'Login'}}
+          options={{title: 'Login', headerShown: false}}
         />
         <Stack.Screen
           component={HomeScreen}
           name="Home"
-          options={{title: 'Home'}}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          component={ExplorationScreen}
+          options={{title: 'Exploration'}}
+          name="Exploration"
+        />
+        <Stack.Screen
+          component={ChatScreen}
+          options={{title: 'Chat', headerShown: false}}
+          name="Chat"
+        />
+        <Stack.Screen
+          component={RoomCreationScreen}
+          name="Room"
+          options={{title: 'Create Room'}}
         />
       </Stack.Navigator>
     </NavigationContainer>
   );
 };
-export default App;
+export default () => {
+  return (
+    <UserIdProvider>
+      <App />
+    </UserIdProvider>
+  );
+};
